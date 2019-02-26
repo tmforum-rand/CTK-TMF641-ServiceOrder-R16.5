@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "b268a03d-6e84-4611-9da0-1569c9d04cc7",
-		"name": "CTK-TMF641-ServiceOrdering",
+		"name": "CTK-TMF641-ServiceOrdering-R16.5",
 		"description": "## TMF API Reference : TMF 641 - Service Ordering Management\n\n## Release : 18.0 - May 2018\n\nThe Service Order API provides a standardized mechanism for managing Service Order, a type of order which can be used to place an order between a customer and a service provider or between a service provider and a partner and vice versa.\n\n### Service Order resource\nA service order will describe a list of service order items.  A service order item references an action on an existing  or  future  service.  By  service  we  designed  Customer Facing  Service  (CFS)  as  well  as  Resource Facing Service (RFS).\nFrom a component perspective, a service order should be available\n- from a Service Orchestration Component (and it could mix CFS and RFS)\n- from an Infrastructure Control & Management component (and it would have only RFS)\n\n### Service Order API performs the following operations on service order :\n- Retrieval of a service order or a collection of service orders depending on filter criteria\n- Partial update of a service order (including updating rules)\n- Creation of a service order (including default values and creation rules)\n- Deletion of service order (for administration purposes)\n- Notification of events on Service order\n\nCopyright © TM Forum 2018. All Rights Reserved",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},

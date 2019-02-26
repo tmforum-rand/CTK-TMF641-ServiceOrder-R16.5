@@ -1,17 +1,15 @@
 {
 	"info": {
-		"_postman_id": "35f1e0a4-5fbf-4744-9db9-8d6e4ce43783",
-		"name": "CTK-TMF641-ServiceOrdering-16-5",
+		"_postman_id": "b268a03d-6e84-4611-9da0-1569c9d04cc7",
+		"name": "CTK-TMF641-ServiceOrdering",
 		"description": "## TMF API Reference : TMF 641 - Service Ordering Management\n\n## Release : 18.0 - May 2018\n\nThe Service Order API provides a standardized mechanism for managing Service Order, a type of order which can be used to place an order between a customer and a service provider or between a service provider and a partner and vice versa.\n\n### Service Order resource\nA service order will describe a list of service order items.  A service order item references an action on an existing  or  future  service.  By  service  we  designed  Customer Facing  Service  (CFS)  as  well  as  Resource Facing Service (RFS).\nFrom a component perspective, a service order should be available\n- from a Service Orchestration Component (and it could mix CFS and RFS)\n- from an Infrastructure Control & Management component (and it would have only RFS)\n\n### Service Order API performs the following operations on service order :\n- Retrieval of a service order or a collection of service orders depending on filter criteria\n- Partial update of a service order (including updating rules)\n- Creation of a service order (including default values and creation rules)\n- Deletion of service order (for administration purposes)\n- Notification of events on Service order\n\nCopyright © TM Forum 2018. All Rights Reserved",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"_postman_id": "f6d0bfeb-0e4e-442a-9c14-1843b7ba6540",
 			"name": "TC_ServiceOrder_N1 – Create new ServiceOrder with minimum required information",
 			"item": [
 				{
-					"_postman_id": "4e359719-967a-4f70-89a6-e57f59528cc2",
 					"name": "Filled IDSO1 mock",
 					"event": [
 						{
@@ -23,8 +21,6 @@
 									"pm.test('Content-Type is application/json', function() { pm.response.headers.has('application/json') });",
 									"//Response Code 201-Created",
 									"pm.test(\"Status code is 201\", function () { pm.response.to.have.status(201); });",
-									"",
-									"",
 									"",
 									"var jsonData = pm.response.json();",
 									"var requiredAttributes = null;",
@@ -70,7 +66,11 @@
 									"    ",
 									"    ",
 									"    pm.test(\"Location on header matches expected\", function (){",
-									"        pm.expect(pm.response.headers.get(\"Location\")).to.equal(request.url + \"/\" +pm.globals.get(\"IDSO1\"));",
+									"        const url = require('url');",
+									"      if((url.parse(pm.response.headers.get(\"Location\")).hostname)==null) ",
+									"      {pm.expect(pm.response.headers.get(\"Location\")).to.equal(url.parse(request.url).pathname + \"/\" +pm.globals.get(\"IDSO1\"));}",
+									"      else",
+									"      {pm.expect(pm.response.headers.get(\"Location\")).to.equal(request.url+ \"/\" +pm.globals.get(\"IDSO1\"));}",
 									"    });",
 									"    ",
 									"    ",
@@ -112,11 +112,13 @@
 									"    pm.test('Response has orderItem[0].action attribute', function() { pm.expect(instance.orderItem[0].action).to.be.a('string'); });",
 									"    pm.test('Response has orderItem[0].state attribute', function() { pm.expect(instance.orderItem[0].state).to.be.a('string'); });",
 									"    ",
-									"    ",
-									"    ",
-									"    ",
 									"    pm.test(\"Location on header matches expected\", function (){",
-									"        pm.expect(pm.response.headers.get(\"Location\")).to.equal(request.url + \"/\" +pm.globals.get(\"IDSO1\"));",
+									"        const url = require('url');",
+									"      if((url.parse(pm.response.headers.get(\"Location\")).hostname)==null) ",
+									"      {pm.expect(pm.response.headers.get(\"Location\")).to.equal(url.parse(request.url).pathname + \"/\" +pm.globals.get(\"IDSO1\"));}",
+									"      else",
+									"      {pm.expect(pm.response.headers.get(\"Location\")).to.equal(request.url+ \"/\" +pm.globals.get(\"IDSO1\"));}",
+									"   //console.log(url.parse(pm.response.headers.get(\"Location\")).hostname);",
 									"    });",
 									"    ",
 									"}",
@@ -130,6 +132,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -139,7 +156,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS748\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40+03:00\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40+03:00\",\n  \"@type\": \"standard\",\n  \"orderSpecification\": {\n        \"id\": \"OM.REST.Composite_order\"\n    },\n  \"relatedParty\": [{\n            \"id\": \"001\",\n            \"role\": \"customer\",\n            \"name\": \"OM REST POST Customer Account\"\n        }\n    ],\n  \"orderItem\": [{\n      \"id\": \"1\",\n      \"action\": \"add\",\n      \"@type\": \"standard\",\n      \"service\": {\n      \t\"id\": \"133123240\",\n        \"serviceState\": \"active\",\n        \"serviceCharacteristic\": [{\n            \"name\": \"OM.REST.Internet_Instance_Spec.Multiple_text_char\",\n            \"valueType\": \"String\",\n            \"value\": \"3810\"\n                    \n          }\n        ],\n        \"serviceSpecification\": {\n          \"id\": \"OM.REST.Internet_Instance_Spec\",\n          \"href\": \"http://...:serviceSpecification/12\",\n          \"name\": \"vCPE\",\n          \"version\": \"1\",\n          \"@type\": \"vCPE\",\n          \"@schemaLocation\": \"http...\"\n        }\n      }\n    }\n  ]\n  \n}\n"
+							"raw": "{\n  \"externalId\": \"OrangeBSS748\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40+03:00\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40+03:00\",\n  \"@type\": \"standard\",\n  \"orderSpecification\": {\n        \"id\": \"OM.REST.Composite_order\"\n    },\n  \"relatedParty\": [{\n            \"id\": \"001\",\n            \"role\": \"customer\",\n            \"name\": \"OM REST POST Customer Account\"\n        }\n    ],\n  \"orderItem\": [{\n      \"id\": \"1\",\n      \"action\": \"add\",\n      \"@type\": \"standard\",\n      \"service\": {\n      \t\"id\": \"14564912436\",\n        \"serviceState\": \"active\",\n        \"serviceCharacteristic\": [{\n            \"name\": \"OM.REST.Internet_Instance_Spec.Multiple_text_char\",\n            \"valueType\": \"String\",\n            \"value\": [\n                        \"5051\",\n                        \"3810\"\n                    ]\n          }\n        ],\n        \"serviceSpecification\": {\n          \"id\": \"OM.REST.Internet_Instance_Spec\",\n          \"href\": \"http://...:serviceSpecification/12\",\n          \"name\": \"vCPE\",\n          \"version\": \"1\",\n          \"@type\": \"vCPE\",\n          \"@schemaLocation\": \"http...\"\n        }\n      }\n    }\n  ]\n  \n}\n"
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder",
@@ -155,7 +172,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "b4815cbc-9596-40a0-8bbf-5e730d4c780a",
 					"name": "get IDSO1",
 					"event": [
 						{
@@ -232,7 +248,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS000\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40.508Z\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"orderDate\": \"2018-01-15T09:37:40.508Z\",\n  \"startDate\": \"2018-01-15T09:37:40.508Z\",\n  \"expectedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"notificationContact\": \"email@domain.tld\",\n  \n  \"@type\": \"standard\",\n  \"orderItem\": [\n  {\n    \"id\": \"1\",\n    \"action\": \"add\",\n    \"@type\": \"standard\",\n    \"service\": {\n    \"serviceState\": \"Active\",\n    \"serviceCharacteristic\": [\n    {\n      \"name\": \"vCPE_IP\",\n      \"valueType\": \"String\",\n      \"value\": {\n        \"@type\": \"IPAddress\",\n        \"@schemaLocation\": \"http....\",\n        \"vCPE_IP\": \"193.218.236.21\"\n      }\n    }\n    ],\n    \"serviceSpecification\": {\n    \"id\": \"12\",\n    \"href\": \"http://...:serviceSpecification/12\",\n    \"name\": \"vCPE\",\n    \"version\": \"1\",\n    \"@type\": \"vCPE\",\n    \"@schemaLocation\": \"http...\"\n    }\n  }\n}\n  ]\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder/{{IDSO1}}",
@@ -251,11 +267,9 @@
 			]
 		},
 		{
-			"_postman_id": "d5b6df8e-5a3d-43e0-9457-5cfe23befcac",
 			"name": "TC_ServiceOrder_N2 – Create new ServiceOrder with minimum set of parameters supported by server",
 			"item": [
 				{
-					"_postman_id": "f30e490c-d769-486d-a044-0ef740e2cf85",
 					"name": "Filled IDSO2 mock",
 					"event": [
 						{
@@ -367,6 +381,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -381,7 +410,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"externalId\": \"OrangeBSS954\",\r\n  \"priority\": \"2\",\r\n  \"description\": \"Service order description\",\r\n  \"category\": \"CloudServiceOrdering\",\r\n  \"requestedStartDate\": \"2018-01-15T09:37:40+03:00\",\r\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40+03:00\",\r\n  \"@type\": \"standard\",\r\n  \"orderSpecification\": {\r\n        \"id\": \"OM.REST.Composite_order\"\r\n    },\r\n  \"relatedParty\": [{\r\n            \"id\": \"001\",\r\n            \"role\": \"customer\",\r\n            \"name\": \"OM REST POST Customer Account\"\r\n        }\r\n    ],\r\n  \"orderItem\": [\r\n  {\r\n    \"id\": \"1\",\r\n    \"action\": \"add\",\r\n    \"@type\": \"standard\",\r\n    \"service\": {\r\n    \"serviceCharacteristic\": [\r\n    {\r\n        \"name\": \"OM.REST.Internet_Instance_Spec.Multiple_text_char\",\r\n        \"valueType\": \"String\",\r\n        \"value\": \"5051\"\r\n      }\r\n      ],\r\n    \"serviceSpecification\": {\r\n    \"id\": \"OM.REST.Internet_Instance_Spec\"\r\n    }\r\n  }\r\n}\r\n  ]\r\n}"
+							"raw": "{\r\n  \"externalId\": \"OrangeBSS954\",\r\n  \"priority\": \"2\",\r\n  \"description\": \"Service order description\",\r\n  \"category\": \"CloudServiceOrdering\",\r\n  \"requestedStartDate\": \"2018-01-15T09:37:40+03:00\",\r\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40+03:00\",\r\n  \"@type\": \"standard\",\r\n  \"orderSpecification\": {\r\n        \"id\": \"OM.REST.Composite_order\"\r\n    },\r\n  \"relatedParty\": [{\r\n            \"id\": \"001\",\r\n            \"role\": \"customer\",\r\n            \"name\": \"OM REST POST Customer Account\"\r\n        }\r\n    ],\r\n  \"orderItem\": [\r\n  {\r\n    \"id\": \"1\",\r\n    \"action\": \"add\",\r\n    \"@type\": \"standard\",\r\n    \"service\": {\r\n    \"serviceCharacteristic\": [\r\n    {\r\n        \"name\": \"OM.REST.Internet_Instance_Spec.Multiple_text_char\",\r\n        \"valueType\": \"String\",\r\n        \"value\": [\r\n                        \"5051\",\r\n                        \"3810\"\r\n                    ]\r\n      }\r\n      ],\r\n    \"serviceSpecification\": {\r\n    \"id\": \"OM.REST.Internet_Instance_Spec\"\r\n    }\r\n  }\r\n}\r\n  ]\r\n}"
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder",
@@ -397,7 +426,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "b4e7190f-3db1-45a9-8a72-43359ace3032",
 					"name": "get IDSO2",
 					"event": [
 						{
@@ -487,6 +515,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -501,7 +544,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS000\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40.508Z\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"orderDate\": \"2018-01-15T09:37:40.508Z\",\n  \"startDate\": \"2018-01-15T09:37:40.508Z\",\n  \"expectedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"notificationContact\": \"email@domain.tld\",\n  \n  \"@type\": \"standard\",\n  \"orderItem\": [\n  {\n    \"id\": \"1\",\n    \"action\": \"add\",\n    \"@type\": \"standard\",\n    \"service\": {\n    \"serviceState\": \"Active\",\n    \"serviceCharacteristic\": [\n    {\n      \"name\": \"vCPE_IP\",\n      \"valueType\": \"String\",\n      \"value\": {\n        \"@type\": \"IPAddress\",\n        \"@schemaLocation\": \"http....\",\n        \"vCPE_IP\": \"193.218.236.21\"\n      }\n    }\n    ],\n    \"serviceSpecification\": {\n    \"id\": \"12\",\n    \"href\": \"http://...:serviceSpecification/12\",\n    \"name\": \"vCPE\",\n    \"version\": \"1\",\n    \"@type\": \"vCPE\",\n    \"@schemaLocation\": \"http...\"\n    }\n  }\n}\n  ]\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder/{{IDSO2}}",
@@ -520,11 +563,9 @@
 			]
 		},
 		{
-			"_postman_id": "a2db0593-be78-4375-a90c-81b0a08f275b",
 			"name": "TC_ServiceOrder_N3 – Search for ServiceOrder with specific characteristics",
 			"item": [
 				{
-					"_postman_id": "074e1a5b-cb82-41ae-a990-1d3f290b9197",
 					"name": "1. category and specification",
 					"event": [
 						{
@@ -559,12 +600,19 @@
 									"        pm.test('Response has externalId attribute', function() { pm.expect(instance.externalId).to.be.a('string'); });",
 									"    }",
 									"    pm.test('Response has priority attribute', function() { pm.expect(instance.priority).to.be.a('string'); });",
-									"    pm.test('Response has description attribute', function() { pm.expect(instance.description).to.be.a('string'); });",
+									"    if(instance.description !== undefined){",
+									"        pm.test('Response has description attribute', function() { pm.expect(instance.description).to.be.a('string'); });",
+									"    }",
 									"    pm.test('Response has category attribute', function() { pm.expect(instance.category).to.be.a('string'); });",
 									"    pm.test('Response has state attribute', function() { pm.expect(instance.state).to.be.a('string') });",
 									"    pm.test('Response has orderDate attribute', function() { pm.expect(instance.orderDate).to.be.a('string'); });",
-									"    pm.test('Response has requestedStartDate attribute', function() { pm.expect(instance.requestedStartDate).to.be.a('string'); });",
+									"    ",
+									"    if(instance.requestedStartDate !== undefined){",
+									"        pm.test('Response has requestedStartDate attribute', function() { pm.expect(instance.requestedStartDate).to.be.a('string'); });",
+									"    }",
+									"    if(instance.requestedCompletionDate !== undefined){",
 									"    pm.test('Response has requestedCompletionDate attribute', function() { pm.expect(instance.requestedCompletionDate).to.be.a('string'); });",
+									"    }",
 									"    if(instance.startDate !== undefined){",
 									"        pm.test('Response has startDate attribute', function() { pm.expect(instance.startDate).to.be.a('string'); });",
 									"    }",
@@ -651,6 +699,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -665,7 +728,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS000\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40.508Z\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"orderDate\": \"2018-01-15T09:37:40.508Z\",\n  \"startDate\": \"2018-01-15T09:37:40.508Z\",\n  \"expectedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"notificationContact\": \"email@domain.tld\",\n  \n  \"@type\": \"standard\",\n  \"orderItem\": [\n  {\n    \"id\": \"1\",\n    \"action\": \"add\",\n    \"@type\": \"standard\",\n    \"service\": {\n    \"serviceState\": \"Active\",\n    \"serviceCharacteristic\": [\n    {\n      \"name\": \"vCPE_IP\",\n      \"valueType\": \"String\",\n      \"value\": {\n        \"@type\": \"IPAddress\",\n        \"@schemaLocation\": \"http....\",\n        \"vCPE_IP\": \"193.218.236.21\"\n      }\n    }\n    ],\n    \"serviceSpecification\": {\n    \"id\": \"12\",\n    \"href\": \"http://...:serviceSpecification/12\",\n    \"name\": \"vCPE\",\n    \"version\": \"1\",\n    \"@type\": \"vCPE\",\n    \"@schemaLocation\": \"http...\"\n    }\n  }\n}\n  ]\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder?category=CloudServiceOrdering",
@@ -687,7 +750,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "829f1a21-d73c-4004-9085-ffb78e706367",
 					"name": "2. priority and category",
 					"event": [
 						{
@@ -786,6 +848,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -800,7 +877,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS000\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40.508Z\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"orderDate\": \"2018-01-15T09:37:40.508Z\",\n  \"startDate\": \"2018-01-15T09:37:40.508Z\",\n  \"expectedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"notificationContact\": \"email@domain.tld\",\n  \n  \"@type\": \"standard\",\n  \"orderItem\": [\n  {\n    \"id\": \"1\",\n    \"action\": \"add\",\n    \"@type\": \"standard\",\n    \"service\": {\n    \"serviceState\": \"Active\",\n    \"serviceCharacteristic\": [\n    {\n      \"name\": \"vCPE_IP\",\n      \"valueType\": \"String\",\n      \"value\": {\n        \"@type\": \"IPAddress\",\n        \"@schemaLocation\": \"http....\",\n        \"vCPE_IP\": \"193.218.236.21\"\n      }\n    }\n    ],\n    \"serviceSpecification\": {\n    \"id\": \"12\",\n    \"href\": \"http://...:serviceSpecification/12\",\n    \"name\": \"vCPE\",\n    \"version\": \"1\",\n    \"@type\": \"vCPE\",\n    \"@schemaLocation\": \"http...\"\n    }\n  }\n}\n  ]\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder?priority=1&category=CloudServiceOrdering",
@@ -826,7 +903,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "160077c4-5b09-41ac-a465-1dd6edf6ce31",
 					"name": "3. externalID = OrangeBSS954",
 					"event": [
 						{
@@ -951,6 +1027,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -965,7 +1056,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS000\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40.508Z\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"orderDate\": \"2018-01-15T09:37:40.508Z\",\n  \"startDate\": \"2018-01-15T09:37:40.508Z\",\n  \"expectedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"notificationContact\": \"email@domain.tld\",\n  \n  \"@type\": \"standard\",\n  \"orderItem\": [\n  {\n    \"id\": \"1\",\n    \"action\": \"add\",\n    \"@type\": \"standard\",\n    \"service\": {\n    \"serviceState\": \"Active\",\n    \"serviceCharacteristic\": [\n    {\n      \"name\": \"vCPE_IP\",\n      \"valueType\": \"String\",\n      \"value\": {\n        \"@type\": \"IPAddress\",\n        \"@schemaLocation\": \"http....\",\n        \"vCPE_IP\": \"193.218.236.21\"\n      }\n    }\n    ],\n    \"serviceSpecification\": {\n    \"id\": \"12\",\n    \"href\": \"http://...:serviceSpecification/12\",\n    \"name\": \"vCPE\",\n    \"version\": \"1\",\n    \"@type\": \"vCPE\",\n    \"@schemaLocation\": \"http...\"\n    }\n  }\n}\n  ]\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder?externalId=OrangeBSS954",
@@ -989,11 +1080,9 @@
 			]
 		},
 		{
-			"_postman_id": "a1c3e952-40aa-4673-a871-728301895664",
 			"name": "TC_ServiceOrder_N4 – Filtered retrieval of ServiceOrder",
 			"item": [
 				{
-					"_postman_id": "c09579e0-f2d6-4254-8801-99f31a57d749",
 					"name": "1. Filtered Retrieval of ServiceOrder",
 					"event": [
 						{
@@ -1038,6 +1127,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -1052,7 +1156,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS000\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40.508Z\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"orderDate\": \"2018-01-15T09:37:40.508Z\",\n  \"startDate\": \"2018-01-15T09:37:40.508Z\",\n  \"expectedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"notificationContact\": \"email@domain.tld\",\n  \n  \"@type\": \"standard\",\n  \"orderItem\": [\n  {\n    \"id\": \"1\",\n    \"action\": \"add\",\n    \"@type\": \"standard\",\n    \"service\": {\n    \"serviceState\": \"Active\",\n    \"serviceCharacteristic\": [\n    {\n      \"name\": \"vCPE_IP\",\n      \"valueType\": \"String\",\n      \"value\": {\n        \"@type\": \"IPAddress\",\n        \"@schemaLocation\": \"http....\",\n        \"vCPE_IP\": \"193.218.236.21\"\n      }\n    }\n    ],\n    \"serviceSpecification\": {\n    \"id\": \"12\",\n    \"href\": \"http://...:serviceSpecification/12\",\n    \"name\": \"vCPE\",\n    \"version\": \"1\",\n    \"@type\": \"vCPE\",\n    \"@schemaLocation\": \"http...\"\n    }\n  }\n}\n  ]\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder/{{IDSO2}}?fields=id,href,priority,state",
@@ -1075,7 +1179,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "7fed48e8-75cb-4a94-a162-332562e64c3a",
 					"name": "2. Filtered by orderItem sub attributes",
 					"event": [
 						{
@@ -1131,6 +1234,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -1145,7 +1263,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS000\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40.508Z\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"orderDate\": \"2018-01-15T09:37:40.508Z\",\n  \"startDate\": \"2018-01-15T09:37:40.508Z\",\n  \"expectedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"notificationContact\": \"email@domain.tld\",\n  \n  \"@type\": \"standard\",\n  \"orderItem\": [\n  {\n    \"id\": \"1\",\n    \"action\": \"add\",\n    \"@type\": \"standard\",\n    \"service\": {\n    \"serviceState\": \"Active\",\n    \"serviceCharacteristic\": [\n    {\n      \"name\": \"vCPE_IP\",\n      \"valueType\": \"String\",\n      \"value\": {\n        \"@type\": \"IPAddress\",\n        \"@schemaLocation\": \"http....\",\n        \"vCPE_IP\": \"193.218.236.21\"\n      }\n    }\n    ],\n    \"serviceSpecification\": {\n    \"id\": \"12\",\n    \"href\": \"http://...:serviceSpecification/12\",\n    \"name\": \"vCPE\",\n    \"version\": \"1\",\n    \"@type\": \"vCPE\",\n    \"@schemaLocation\": \"http...\"\n    }\n  }\n}\n  ]\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder/{{IDSO1}}?fields=id,state,orderItem.id,orderItem.state,orderItem.action",
@@ -1170,11 +1288,9 @@
 			]
 		},
 		{
-			"_postman_id": "be8f625b-5a3f-40ee-ac70-bbdf4d6f1683",
 			"name": "TC_ServiceOrder_N5 – Filtered Search and Filtered data response",
 			"item": [
 				{
-					"_postman_id": "829c3d5f-664b-4d21-8a26-f4b5ada56b8e",
 					"name": "externalId=OrangeBSS748&fields=id,state,category,description",
 					"event": [
 						{
@@ -1232,6 +1348,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -1246,7 +1377,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS000\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40.508Z\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"orderDate\": \"2018-01-15T09:37:40.508Z\",\n  \"startDate\": \"2018-01-15T09:37:40.508Z\",\n  \"expectedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"notificationContact\": \"email@domain.tld\",\n  \n  \"@type\": \"standard\",\n  \"orderItem\": [\n  {\n    \"id\": \"1\",\n    \"action\": \"add\",\n    \"@type\": \"standard\",\n    \"service\": {\n    \"serviceState\": \"Active\",\n    \"serviceCharacteristic\": [\n    {\n      \"name\": \"vCPE_IP\",\n      \"valueType\": \"String\",\n      \"value\": {\n        \"@type\": \"IPAddress\",\n        \"@schemaLocation\": \"http....\",\n        \"vCPE_IP\": \"193.218.236.21\"\n      }\n    }\n    ],\n    \"serviceSpecification\": {\n    \"id\": \"12\",\n    \"href\": \"http://...:serviceSpecification/12\",\n    \"name\": \"vCPE\",\n    \"version\": \"1\",\n    \"@type\": \"vCPE\",\n    \"@schemaLocation\": \"http...\"\n    }\n  }\n}\n  ]\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder?externalId=OrangeBSS748&fields=id,state,category,description",
@@ -1274,11 +1405,9 @@
 			]
 		},
 		{
-			"_postman_id": "6c49eedf-0b41-43f3-9f1f-1a96b88ab990",
 			"name": "TC_ServiceOrder_E1 – Unknown Trouble ServiceOrder identifier",
 			"item": [
 				{
-					"_postman_id": "0c29da9b-68a9-4120-819e-65964f1110f8",
 					"name": "Send GET to ID that doesn't exist",
 					"event": [
 						{
@@ -1300,6 +1429,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -1314,7 +1458,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"OrangeBSS000\",\n  \"priority\": \"1\",\n  \"description\": \"Service order description\",\n  \"category\": \"CloudServiceOrdering\",\n  \"requestedStartDate\": \"2018-01-15T09:37:40.508Z\",\n  \"requestedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"orderDate\": \"2018-01-15T09:37:40.508Z\",\n  \"startDate\": \"2018-01-15T09:37:40.508Z\",\n  \"expectedCompletionDate\": \"2018-01-15T09:37:40.508Z\",\n  \"notificationContact\": \"email@domain.tld\",\n  \n  \"@type\": \"standard\",\n  \"orderItem\": [\n  {\n    \"id\": \"1\",\n    \"action\": \"add\",\n    \"@type\": \"standard\",\n    \"service\": {\n    \"serviceState\": \"Active\",\n    \"serviceCharacteristic\": [\n    {\n      \"name\": \"vCPE_IP\",\n      \"valueType\": \"String\",\n      \"value\": {\n        \"@type\": \"IPAddress\",\n        \"@schemaLocation\": \"http....\",\n        \"vCPE_IP\": \"193.218.236.21\"\n      }\n    }\n    ],\n    \"serviceSpecification\": {\n    \"id\": \"12\",\n    \"href\": \"http://...:serviceSpecification/12\",\n    \"name\": \"vCPE\",\n    \"version\": \"1\",\n    \"@type\": \"vCPE\",\n    \"@schemaLocation\": \"http...\"\n    }\n  }\n}\n  ]\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{ServiceOrderingAPI}}/serviceOrder/{{IDSO3}}",
@@ -1334,13 +1478,26 @@
 			"description": "Send a GET message to /{apiRoot}/ServiceOrder/{IDSO3}, where {IDSO3} does not\nmatch any of the identifiers previously created in the server\n• Wait for a response from the server with the following characteristics\no Response Code 404-Not Found"
 		},
 		{
-			"_postman_id": "902adcc0-8cfd-483d-a62a-645c455bef93",
 			"name": "TC_ServiceOrder_E2 – Invalid Request – unexpecting parameter",
 			"item": [
 				{
-					"_postman_id": "e9ee45f5-2e1d-45fd-a97b-dbcb2d9a195e",
 					"name": "Send Invalid POST request",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
@@ -1368,13 +1525,26 @@
 			]
 		},
 		{
-			"_postman_id": "c4eb7c58-4e3a-40f3-b46c-0b8c3e2d5d39",
 			"name": "TC_ServiceOrder_E3 – Invalid Request – Missing parameter mandatory in context",
 			"item": [
 				{
-					"_postman_id": "bab0e9e0-90f3-41fc-8bde-badda5314e90",
 					"name": "Send Invalid POST request",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "netcracker",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "sysadm",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [
 							{
